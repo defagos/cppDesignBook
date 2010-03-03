@@ -1,0 +1,67 @@
+\documentclass[a4paper,oneside]{book}
+
+\usepackage[english]{babel}
+\usepackage{makeidx}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{mathrsfs}
+\usepackage{dsfont}
+\usepackage[usenames]{color}
+\usepackage{syntonly}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{color}
+% Changes the typewriter font family to have bold fonts, etc.
+\usepackage[T1]{fontenc}
+\usepackage[scaled]{luximono}
+\lstset{
+    language=C++,
+    showstringspaces=false,
+    basicstyle=\small\ttfamily
+}
+
+\makeindex
+
+\addtolength{\hoffset}{-1.25cm}
+\addtolength{\textwidth}{2.5cm}
+\addtolength{\textheight}{2cm}
+\addtolength{\voffset}{-1cm}
+
+\begin{document}
+\frontmatter
+
+\newlength{\centeroffset}
+\thispagestyle{empty}
+\vspace*{\stretch{1}}
+\noindent\hspace*{\centeroffset}\makebox[0pt][l]{\begin{minipage}{\textwidth}
+\center
+{\Huge\bfseries C++ Design}
+\noindent\rule[-1ex]{\textwidth}{2pt}\\[2.5ex]
+\emph{\Large A collection of design examples}
+\end{minipage}}
+
+\vspace{\stretch{1}}
+\noindent\hspace*{\centeroffset}\makebox[0pt][l]{\begin{minipage}{\textwidth}
+\center 
+written by {\bfseries Samuel D\'efago}\\[1.5ex]
+{defagos -at- gmail.com}
+\end{minipage}}
+
+\vspace*{\stretch{1}}
+\noindent\hspace*{\centeroffset}\makebox[0pt][l]{\begin{minipage}{\textwidth}
+\center 
+2010
+\end{minipage}}
+
+\tableofcontents
+\mainmatter
+\include{stlContainerChapter}
+
+%\appendix
+%\include{appendix}
+
+\addcontentsline{toc}{chapter}{Bibliography}
+\bibliographystyle{amsplain}
+\bibliography{refs}
+
+\end{document}
