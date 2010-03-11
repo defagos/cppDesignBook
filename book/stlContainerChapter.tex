@@ -632,6 +632,26 @@ private:
 };
 \end{lstlisting}
 
+TODO: Documenter les sources des exemples!
+
+TODO: Attention: Pour compiler avec g++, Iterator doit déclarer ConstIterator friend
+afin que ConstIterator puisse avoir accès au constructeur privé pour implémenter la
+conversion! Le raisonnement que je tiens dans ce document n'est pas standard (fonctionne
+avec VC++ mais pas pour de bonnes raisons probablement). Corriger.
+
+TODO: Discuter de l'inlining (SList2 et SList3)
+
+TODO: Templates (SList4): operator==/!= en tant que friends -> selon g++, il faut les déclarer sous forme
+de templates (voir aussi http://msdn.microsoft.com/en-us/library/f1b2td24.aspx). Ne linke ni
+sous VC++ ni sous g++ sinon!
+Alternative (à présenter): plus des friends mais des membres publics. Discuter des conséquences
+éventuelles (y en a-t-il sur les conversions auto notamment?)
+
+TODO: Faire des projets propres, multiplateformes, des .gitignore pour ignorer les binaires dans
+le repository, y.c. pour les binaires du livre
+
+TODO: Discuter de la STL-isation 
+
 
 TODO: Performance comparisons! (remark: this is a singly-linked list, whereas the std::list
 is doubly-linked) + executable size comparison (many compilers)
