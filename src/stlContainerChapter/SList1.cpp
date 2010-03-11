@@ -112,6 +112,7 @@ SList1::SList1(const SList1 &rhs)
 
 SList1 &SList1::operator=(const SList1 &rhs)
 {
+  // Check for self-assignment
   if (this != &rhs) {
     release();
     createFrom(rhs);
@@ -150,18 +151,24 @@ void SList1::push_front(const std::string &value)
   m_pFirstNode = pNode;
 }
 
+/**
+ * Function factoring out the code for creating a list from an existing one. Must
+ * be called only on an empty list
+ */
 void SList1::createFrom(const SList1 &rhs)
 {
-  // Can only create if current list is empty
+  // Ensure that the list is empty
   assert(m_pFirstNode == 0);
 
   Node *pRhsNode = rhs.m_pFirstNode;
   Node *pNode = 0;
   while (pRhsNode) {
+    // Empty list; create first node
     if (! m_pFirstNode) {
       m_pFirstNode = new Node(pRhsNode->m_value, 0);
       pNode = m_pFirstNode;
     }
+    // Add following nodes
     else {
       pNode->m_pNextNode = new Node(pRhsNode->m_value, 0);
       pNode = pNode->m_pNextNode;
@@ -170,6 +177,9 @@ void SList1::createFrom(const SList1 &rhs)
   }
 }
 
+/**
+ * Function factoring out the cleanup code
+ */
 void SList1::release()
 {
   Node *pNode = m_pFirstNode;

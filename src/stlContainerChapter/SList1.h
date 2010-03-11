@@ -1,3 +1,9 @@
+/**
+ * Implementation of a list holding standard strings
+ *   - only std::string objects are stored
+ *   - no inlining is performed at all
+ */
+
 #ifndef SLIST1_H
 #define SLIST1_H
 
