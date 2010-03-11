@@ -1,0 +1,54 @@
+Development tools for C++ design book examples
+----------------------------------------------
+This directory collects all development tools for building the example files for all supported
+platforms and compilers.
+
+To generate a complete development environment for a specific compiler / platform, follow the
+steps below.
+
+1) Generation of the build scripts
+   -------------------------------
+Simply run the generate* file corresponding to your platform and the compiler you target. The
+development environments are generated in completely separated folders. Compilation happens
+separately for each environment, no overlap can occur. You can therefore run several different
+development environments and compilers in parallel.
+
+Currently the following generate* files are available:
+  a) Windows operating systems
+    - generateMSVC9x86.bat: Generates the x86 solution for Microsoft Visual C++ 2008
+    - generateMSVC9x64.bat: Generates the x64 solution for Microsoft Visual C++ 2008
+    - generateMSVC10x86.bat: Generates the x86 solution for Microsoft Visual C++ 2010
+    - generateMSVC10x64.bat: Generates the x64 solution for Microsoft Visual C++ 2010
+    - generateMinGW.bat: Generates the x86 makefiles for the MinGW compiler. No x64 support is
+                         currently available: Though an x64 version of the MinGW compiler exists
+                         (http://sourceforge.net/projects/mingw-w64/), no correspondig CMake
+                         generator exists.
+    - generateUnixMakefiles.sh (Cygwin environment): Generates the Unix makefiles. No x64 support
+                                                     currently available. Note that you might have
+                                                     to convert this file to Unix format (dos2unix)
+                                                     and to give it execution permission.
+                                                     
+  b) Linux / Unix
+    - generateUnixMakefiles.sh: Generates the Unix makefiles
+
+Remark: Some Visual Studio environments might not be available depending on the version you are
+        running (e.g. the 64-bit compiler is not provided with the free Express version of Visual
+        Studio 2008). Check the output produced by the generateMSVC* batch files.
+     
+2) Compiling
+   ---------
+The development environments are now ready. You can compile the source files, as follows:
+  a) Microsoft Visual C++ compilers: Open the solution and build it, or use devenv.exe /Build
+     from the Visual Studio command prompt
+  b) MinGW: Switch to a folder containing a Makefile, and use
+        %YOUR_MINGW_PATH%\bin\mingw32-make.exe
+  c) Linux / Unix / Cygwin: Use make
+The compiled binary files are put in separate bin, dll and lib folders in the main book
+directory. Subfolders are created to cleanly separate the development environments and the
+configuration currently supported (default CMake configurations):
+  - Debug: Non-optimized code with debug information. No inlining
+  - RelWithDebInfo: Code optimized for speed with debug information. Minimum inlining
+                    (pre-release code)
+  - MinSizeRel: Code optimized for size, minimum inlining. No debug information.
+  - Release: Code optimized for speed, inlining enabled. No debug information.
+Note that depending on the platform some (or all) configurations might be the same.
