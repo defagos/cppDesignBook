@@ -10,6 +10,9 @@
 # in between those changes the changes made to it locally must not be committed. In 
 # between commits we therefore must flag such files as unchanged.
 
+# Ignore generated book files
+pdf/
+
 # Ignore binary files
 bin/
 dll/
