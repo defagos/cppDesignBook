@@ -3,6 +3,7 @@
 #include "SList3.h"
 
 #include "List4.h"
+#include "List5.h"
 
 #include <iostream>
 
@@ -29,9 +30,11 @@ void testSList()
 int main(int argc, char *argv[])
 {
   typedef List4<std::string> SList4;
+  typedef List5<std::string> SList5;
 
   testSList<SList1>();
   testSList<SList2>();
   testSList<SList3>();
   testSList<SList4>();
+  testSList<SList5>();
 }
