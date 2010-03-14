@@ -1,3 +1,4 @@
+#include "SList0.h"
 #include "SList1.h"
 #include "SList2.h"
 #include "SList3.h"
@@ -56,6 +57,7 @@ int main(int argc, char *argv[])
   typedef List6<std::string> SList6;
   typedef List7<std::string> SList7;
 
+  testSList<SList0>();
   testSList<SList1>();
   testSList<SList2>();
   testSList<SList3>();

@@ -252,8 +252,6 @@ Now the \lstinline!SList! class can instantiate iterators from node pointers, th
 \end{itemize}
 For fatter and more decoupled classes, friendship involves in general an inacceptable loss of encapsulation and should be avoided.
 
-Note that since \lstinline!SList! itself is friend of both classes nested within it, iterator classes automatically have access to each other private sections without being each ofhter friends explicitly. This is because if a class F is a friend of class C, then anything within F (including nested classes) has access to the implementation of C. This illustrates why friendship must be granted carefully, otherwise some classes could inadvertently get access to other classes they should not have knowledge of. But used with care, which is here the case since we are coupling related implementation details anyway, friendship can be helpful.
-
 \subsection{The Node struct}
 As an implementation detail, the \lstinline!Node! struct was hidden behind a forward declaration and can thus be defined in the hidden \lstinline!SList.cpp! implementation file. For a singly linked list of strings each \lstinline!Node! must store a string value as well as a pointer to the next \lstinline!Node! in the list. Some remarks:
 \begin{itemize}
@@ -284,7 +282,7 @@ Providing user-defined objects with the usual semantics is a rule of sound desig
 These three options are discussed below.
 
 \subsubsection{Using public inheritance}
-The desired conversion can be obtained by having \lstinline!Iterator! publicly derive from \lstinline!ConstIterator!. In general public inheritance should mean is-a, but in this case the inheritance relationship is mostly just a trick to allow conversion between classes. But since the rellationship is not is-a, we do not want \lstinline!Iterator! to be used polymorphically through \lstinline!ConstIterator!. This is achieved by defining the destructor non-virtual:
+The desired conversion can be obtained by having \lstinline!Iterator! publicly derive from \lstinline!ConstIterator!. In general public inheritance should mean is-a, but in this case the inheritance relationship is mostly just a trick to allow conversion between classes. But since the relationship is not is-a, we do not want \lstinline!Iterator! to be used polymorphically through \lstinline!ConstIterator!. This is achieved by defining the destructor non-virtual:
 \begin{lstlisting}[frame=single, caption={SList.h}]
 class SList {
 private:
@@ -323,7 +321,7 @@ private:
 \end{lstlisting}
 Using inheritance only a single \lstinline!Node *! must be stored by iterator classes, namely in the \lstinline!ConstIterator! base class. But we cannot simply store a \lstinline!const Node *! within \lstinline!ConstIterator! since this would require us to cast constness away everytime we use it from the \lstinline!Iterator! implementation. We have several other options here:
 \begin{itemize}
-\item Store a \lstinline!Node *! within \lstinline!ConstIterator!:
+\item Store a \lstinline!Node *! within \lstinline!ConstIterator!, not a \lstinline!const Node *!:
 \begin{lstlisting}[frame=single, caption={SList.h}]
 class SList {
 private:

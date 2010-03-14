@@ -4,44 +4,19 @@
  *   - no inlining is performed at all
  */
 
-#ifndef SLIST1_H
-#define SLIST1_H
+#ifndef SLIST0_H
+#define SLIST0_H
 
 #include <string>
 
-class SList1 {
+class SList0 {
 private:
   struct Node;
 
 public:
-  class ConstIterator;
-
-  class Iterator {
-  public:
-    Iterator();
-
-    Iterator &operator++();
-    const Iterator operator++(int);
-
-    std::string *operator->() const;
-    std::string &operator*() const;
-
-    friend bool operator==(const Iterator &lhs, const Iterator &rhs);
-    friend bool operator!=(const Iterator &lhs, const Iterator &rhs);
-  
-  private:
-    friend class SList1;
-    friend class ConstIterator;
-
-    explicit Iterator(Node *pNode);
-
-    Node *m_pNode;
-  };
-
   class ConstIterator {
   public:
     ConstIterator();
-    ConstIterator(const Iterator &rhs);
 
     ConstIterator &operator++();
     const ConstIterator operator++(int);
@@ -52,20 +27,40 @@ public:
     friend bool operator==(const ConstIterator &lhs, const ConstIterator &rhs);
     friend bool operator!=(const ConstIterator &lhs, const ConstIterator &rhs);
 
-  private:
-    friend class SList1;
-
+  protected:
+    // Protected since needs to be accessed for construction of derived classes
     explicit ConstIterator(const Node *);
 
+  private:
+    friend class SList0;
+
+    // No need to make protected: Avoids duplicate code by calling base class version. Small price
+    // to pay: Function call overhead, which can be removed using inlining
     const Node *m_pNode;
   };
 
-  SList1();
-  
-  SList1(const SList1 &rhs);
-  SList1 &operator=(const SList1 &rhs);
+class Iterator : public ConstIterator {
+  public:
+    Iterator();
 
-  ~SList1();
+    Iterator &operator++();
+    const Iterator operator++(int);
+
+    std::string *operator->() const;
+    std::string &operator*() const;
+  
+  private:
+    friend class SList0;
+
+    explicit Iterator(Node *pNode);
+  };
+
+  SList0();
+  
+  SList0(const SList0 &rhs);
+  SList0 &operator=(const SList0 &rhs);
+
+  ~SList0();
 
   ConstIterator begin() const;
   Iterator begin();
@@ -76,7 +71,7 @@ public:
   void push_front(const std::string &value);
 
 private:
-  void createFrom(const SList1 &rhs);
+  void createFrom(const SList0 &rhs);
   void release();
 
   Node *m_pFirstNode;

@@ -42,7 +42,7 @@ public:
 
     explicit Iterator(Node *pNode);
 
-    Node * m_pNode;
+    Node *m_pNode;
   };
 
   class ConstIterator {
@@ -70,7 +70,7 @@ public:
 
     explicit ConstIterator(const Node *);
 
-    const Node * m_pNode;
+    const Node *m_pNode;
   };
 
   List4();

@@ -65,7 +65,7 @@ public:
 
     explicit iterator(Node *pNode);
 
-    Node * m_pNode;
+    Node *m_pNode;
   };
 
   // Method 2): Derive from std::iterator; No prefixing needed here, value_type from class above, i.e. List7. But maybe better to be explicit (more readable)? 
@@ -100,7 +100,7 @@ public:
 
     explicit const_iterator(const Node *);
 
-    const Node * m_pNode;
+    const Node *m_pNode;
   };
 
   List7();
