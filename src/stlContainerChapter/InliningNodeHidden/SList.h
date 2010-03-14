@@ -5,12 +5,12 @@
  *     in the implementation file
  */
 
-#ifndef SLIST2_H
-#define SLIST2_H
+#ifndef SLIST_H
+#define SLIST_H
 
 #include <string>
 
-class SList2 {
+class SList {
 private:
   struct Node;
 
@@ -31,7 +31,7 @@ public:
     friend bool operator!=(const Iterator &lhs, const Iterator &rhs);
   
   private:
-    friend class SList2;
+    friend class SList;
     friend class ConstIterator;
 
     explicit Iterator(Node *pNode);
@@ -54,19 +54,19 @@ public:
     friend bool operator!=(const ConstIterator &lhs, const ConstIterator &rhs);
 
   private:
-    friend class SList2;
+    friend class SList;
 
     explicit ConstIterator(const Node *);
 
     const Node *m_pNode;
   };
 
-  SList2();
+  SList();
   
-  SList2(const SList2 &rhs);
-  SList2 &operator=(const SList2 &rhs);
+  SList(const SList &rhs);
+  SList &operator=(const SList &rhs);
 
-  ~SList2();
+  ~SList();
 
   ConstIterator begin() const;
   Iterator begin();
@@ -77,63 +77,63 @@ public:
   void push_front(const std::string &value);
 
 private:
-  void createFrom(const SList2 &rhs);
+  void createFrom(const SList &rhs);
   void release();
 
   Node *m_pFirstNode;
 };
 
-inline SList2::Iterator::Iterator()
+inline SList::Iterator::Iterator()
 : m_pNode(0)
 {}
 
-inline bool operator==(const SList2::Iterator &lhs, const SList2::Iterator &rhs)
+inline bool operator==(const SList::Iterator &lhs, const SList::Iterator &rhs)
 {
   return lhs.m_pNode == rhs.m_pNode;
 }
 
-inline bool operator!=(const SList2::Iterator &lhs, const SList2::Iterator &rhs)
+inline bool operator!=(const SList::Iterator &lhs, const SList::Iterator &rhs)
 {
   return lhs.m_pNode != rhs.m_pNode;
 }
 
-inline SList2::Iterator::Iterator(Node *pNode)
+inline SList::Iterator::Iterator(Node *pNode)
 : m_pNode(pNode)
 {}
 
-inline SList2::ConstIterator::ConstIterator()
+inline SList::ConstIterator::ConstIterator()
 : m_pNode(0)
 {}
 
-inline SList2::ConstIterator::ConstIterator(const Iterator &rhs)
+inline SList::ConstIterator::ConstIterator(const Iterator &rhs)
 : m_pNode(rhs.m_pNode)
 {}
 
-inline bool operator==(const SList2::ConstIterator &lhs, const SList2::ConstIterator &rhs)
+inline bool operator==(const SList::ConstIterator &lhs, const SList::ConstIterator &rhs)
 {
   return lhs.m_pNode == rhs.m_pNode;
 }
 
-inline bool operator!=(const SList2::ConstIterator &lhs, const SList2::ConstIterator &rhs)
+inline bool operator!=(const SList::ConstIterator &lhs, const SList::ConstIterator &rhs)
 {
   return lhs.m_pNode != rhs.m_pNode;
 }
 
-inline SList2::ConstIterator::ConstIterator(const Node *pNode)
+inline SList::ConstIterator::ConstIterator(const Node *pNode)
 : m_pNode(pNode)
 {}
 
-inline SList2::SList2()
+inline SList::SList()
 : m_pFirstNode(0)
 {}
 
-inline SList2::SList2(const SList2 &rhs)
+inline SList::SList(const SList &rhs)
 : m_pFirstNode(0)
 {
   createFrom(rhs);
 }
 
-inline SList2 &SList2::operator=(const SList2 &rhs)
+inline SList &SList::operator=(const SList &rhs)
 {
   // Check for self-assignment
   if (this != &rhs) {
@@ -143,27 +143,27 @@ inline SList2 &SList2::operator=(const SList2 &rhs)
   return *this;
 }
 
-inline SList2::~SList2()
+inline SList::~SList()
 {
   release();
 }
 
-inline SList2::ConstIterator SList2::begin() const
+inline SList::ConstIterator SList::begin() const
 {
   return ConstIterator(m_pFirstNode);
 }
 
-inline SList2::Iterator SList2::begin()
+inline SList::Iterator SList::begin()
 {
   return Iterator(m_pFirstNode);
 }
 
-inline SList2::ConstIterator SList2::end() const
+inline SList::ConstIterator SList::end() const
 {
   return ConstIterator(0);
 }
 
-inline SList2::Iterator SList2::end()
+inline SList::Iterator SList::end()
 {
   return Iterator(0);
 }

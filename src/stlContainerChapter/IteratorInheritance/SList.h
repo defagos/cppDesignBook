@@ -4,12 +4,12 @@
  *   - no inlining is performed at all
  */
 
-#ifndef SLIST0_H
-#define SLIST0_H
+#ifndef SLIST_H
+#define SLIST_H
 
 #include <string>
 
-class SList0 {
+class SList {
 private:
   struct Node;
 
@@ -32,7 +32,7 @@ public:
     explicit ConstIterator(const Node *);
 
   private:
-    friend class SList0;
+    friend class SList;
 
     // No need to make protected: Avoids duplicate code by calling base class version. Small price
     // to pay: Function call overhead, which can be removed using inlining
@@ -50,17 +50,17 @@ class Iterator : public ConstIterator {
     std::string &operator*() const;
   
   private:
-    friend class SList0;
+    friend class SList;
 
     explicit Iterator(Node *pNode);
   };
 
-  SList0();
+  SList();
   
-  SList0(const SList0 &rhs);
-  SList0 &operator=(const SList0 &rhs);
+  SList(const SList &rhs);
+  SList &operator=(const SList &rhs);
 
-  ~SList0();
+  ~SList();
 
   ConstIterator begin() const;
   Iterator begin();
@@ -71,7 +71,7 @@ class Iterator : public ConstIterator {
   void push_front(const std::string &value);
 
 private:
-  void createFrom(const SList0 &rhs);
+  void createFrom(const SList &rhs);
   void release();
 
   Node *m_pFirstNode;

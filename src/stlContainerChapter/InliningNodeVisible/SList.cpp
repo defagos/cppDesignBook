@@ -1,4 +1,4 @@
-#include "SList3.h"
+#include "SList.h"
 
 #include <cassert>
 
@@ -6,7 +6,7 @@
  * Function factoring out the code for creating a list from an existing one. Must
  * be called only on an empty list
  */
-void SList3::createFrom(const SList3 &rhs)
+void SList::createFrom(const SList &rhs)
 {
   // Ensure that the list is empty
   assert(m_pFirstNode == 0);
@@ -31,7 +31,7 @@ void SList3::createFrom(const SList3 &rhs)
 /**
  * Function factoring out the cleanup code
  */
-void SList3::release()
+void SList::release()
 {
   Node *pNode = m_pFirstNode;
   while (pNode) {

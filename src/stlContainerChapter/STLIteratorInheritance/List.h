@@ -1,5 +1,5 @@
-#ifndef LIST7_H
-#define LIST7_H
+#ifndef LIST_H
+#define LIST_H
 
 #include <cassert>
 // Include for std::allocator
@@ -16,7 +16,7 @@
 // We may choose between 1) and 2) since (see TC++PL, p. 553: "CAN be used to define those member types")
 
 template<class T, class A = std::allocator<T> >
-class List7 {
+class List {
 private:
   struct Node;
 
@@ -33,13 +33,13 @@ public:
 
   class const_iterator;
 
-  // Method 2): Derive from std::iterator; No prefixing needed here, value_type from class above, i.e. List7. But here added since more
+  // Method 2): Derive from std::iterator; No prefixing needed here, value_type from class above, i.e. List. But here added since more
   // readable / explicit
   class iterator : public std::iterator<
-    typename List7<T, A>::value_type,
-    typename List7<T, A>::difference_type,
-    typename List7<T, A>::pointer,
-    typename List7<T, A>::reference
+    typename List<T, A>::value_type,
+    typename List<T, A>::difference_type,
+    typename List<T, A>::pointer,
+    typename List<T, A>::reference
   > {
   public:
     iterator();
@@ -60,7 +60,7 @@ public:
     }
   
   private:
-    friend class List7;
+    friend class List;
     friend class const_iterator;
 
     explicit iterator(Node *pNode);
@@ -68,17 +68,17 @@ public:
     Node *m_pNode;
   };
 
-  // Method 2): Derive from std::iterator; No prefixing needed here, value_type from class above, i.e. List7. But maybe better to be explicit (more readable)? 
+  // Method 2): Derive from std::iterator; No prefixing needed here, value_type from class above, i.e. List. But maybe better to be explicit (more readable)? 
   class const_iterator : public std::iterator<
-    typename List7<T, A>::value_type,
-    typename List7<T, A>::difference_type,
-    typename List7<T, A>::const_pointer,
-    typename List7<T, A>::const_reference
+    typename List<T, A>::value_type,
+    typename List<T, A>::difference_type,
+    typename List<T, A>::const_pointer,
+    typename List<T, A>::const_reference
   > {
   public:
     const_iterator();
     // Disambiguation needed here!
-    const_iterator(const typename List7<T, A>::iterator &rhs);
+    const_iterator(const typename List<T, A>::iterator &rhs);
 
     const_iterator &operator++();
     const const_iterator operator++(int);
@@ -96,19 +96,19 @@ public:
     }
 
   private:
-    friend class List7;
+    friend class List;
 
     explicit const_iterator(const Node *);
 
     const Node *m_pNode;
   };
 
-  List7();
+  List();
   
-  List7(const List7 &rhs);
-  List7 &operator=(const List7 &rhs);
+  List(const List &rhs);
+  List &operator=(const List &rhs);
 
-  ~List7();
+  ~List();
 
   const_iterator begin() const;
   iterator begin();
@@ -119,14 +119,14 @@ public:
   void push_front(const T &value);
 
 private:
-  void createFrom(const List7 &rhs);
+  void createFrom(const List &rhs);
   void release();
 
   Node *m_pFirstNode;
 };
 
 template<class T, class A>
-struct List7<T, A>::Node {
+struct List<T, A>::Node {
   Node(const T &value, Node *pNextNode);
 
   T m_value;
@@ -134,25 +134,25 @@ struct List7<T, A>::Node {
 };
 
 template<class T, class A>
-List7<T, A>::Node::Node(const T &value, Node *pNextNode)
+List<T, A>::Node::Node(const T &value, Node *pNextNode)
 : m_value(value),
   m_pNextNode(pNextNode)
 {}
 
 template<class T, class A>
-List7<T, A>::iterator::iterator()
+List<T, A>::iterator::iterator()
 : m_pNode(0)
 {}
 
 template<class T, class A>
-typename List7<T, A>::iterator &List7<T, A>::iterator::operator++()
+typename List<T, A>::iterator &List<T, A>::iterator::operator++()
 {
   m_pNode = m_pNode->m_pNextNode;
   return *this;
 }
 
 template<class T, class A>
-const typename List7<T, A>::iterator List7<T, A>::iterator::operator++(int)
+const typename List<T, A>::iterator List<T, A>::iterator::operator++(int)
 {
   iterator tmp(*this);
   m_pNode = m_pNode->m_pNextNode;
@@ -160,41 +160,41 @@ const typename List7<T, A>::iterator List7<T, A>::iterator::operator++(int)
 }
 
 template<class T, class A>
-T *List7<T, A>::iterator::operator->() const
+T *List<T, A>::iterator::operator->() const
 {
   return &m_pNode->m_value;
 }
 
 template<class T, class A>
-T &List7<T, A>::iterator::operator*() const
+T &List<T, A>::iterator::operator*() const
 {
   return m_pNode->m_value;
 }
 
 template<class T, class A>
-List7<T, A>::iterator::iterator(Node *pNode)
+List<T, A>::iterator::iterator(Node *pNode)
 : m_pNode(pNode)
 {}
 
 template<class T, class A>
-List7<T, A>::const_iterator::const_iterator()
+List<T, A>::const_iterator::const_iterator()
 : m_pNode(0)
 {}
 
 template<class T, class A>
-List7<T, A>::const_iterator::const_iterator(const typename List7<T, A>::iterator &rhs)
+List<T, A>::const_iterator::const_iterator(const typename List<T, A>::iterator &rhs)
 : m_pNode(rhs.m_pNode)
 {}
 
 template<class T, class A>
-typename List7<T, A>::const_iterator &List7<T, A>::const_iterator::operator++()
+typename List<T, A>::const_iterator &List<T, A>::const_iterator::operator++()
 {
   m_pNode = m_pNode->m_pNextNode;
   return *this;
 }
 
 template<class T, class A>
-const typename List7<T, A>::const_iterator List7<T, A>::const_iterator::operator++(int)
+const typename List<T, A>::const_iterator List<T, A>::const_iterator::operator++(int)
 {
   const_iterator tmp(*this);
   m_pNode = m_pNode->m_pNextNode;
@@ -202,36 +202,36 @@ const typename List7<T, A>::const_iterator List7<T, A>::const_iterator::operator
 }
 
 template<class T, class A>
-const T *List7<T, A>::const_iterator::operator->() const
+const T *List<T, A>::const_iterator::operator->() const
 {
   return &m_pNode->m_value;
 }
 
 template<class T, class A>
-const T &List7<T, A>::const_iterator::operator*() const
+const T &List<T, A>::const_iterator::operator*() const
 {
   return m_pNode->m_value;
 }
 
 template<class T, class A>
-List7<T, A>::const_iterator::const_iterator(const Node *pNode)
+List<T, A>::const_iterator::const_iterator(const Node *pNode)
 : m_pNode(pNode)
 {}
 
 template<class T, class A>
-List7<T, A>::List7()
+List<T, A>::List()
 : m_pFirstNode(0)
 {}
 
 template<class T, class A>
-List7<T, A>::List7(const List7<T, A> &rhs)
+List<T, A>::List(const List<T, A> &rhs)
 : m_pFirstNode(0)
 {
   createFrom(rhs);
 }
 
 template<class T, class A>
-List7<T, A> &List7<T, A>::operator=(const List7<T, A> &rhs)
+List<T, A> &List<T, A>::operator=(const List<T, A> &rhs)
 {
   // Check for self-assignment
   if (this != &rhs) {
@@ -242,37 +242,37 @@ List7<T, A> &List7<T, A>::operator=(const List7<T, A> &rhs)
 }
 
 template<class T, class A>
-List7<T, A>::~List7()
+List<T, A>::~List()
 {
   release();
 }
 
 template<class T, class A>
-typename List7<T, A>::const_iterator List7<T, A>::begin() const
+typename List<T, A>::const_iterator List<T, A>::begin() const
 {
   return const_iterator(m_pFirstNode);
 }
 
 template<class T, class A>
-typename List7<T, A>::iterator List7<T, A>::begin()
+typename List<T, A>::iterator List<T, A>::begin()
 {
   return iterator(m_pFirstNode);
 }
 
 template<class T, class A>
-typename List7<T, A>::const_iterator List7<T, A>::end() const
+typename List<T, A>::const_iterator List<T, A>::end() const
 {
   return const_iterator(0);
 }
 
 template<class T, class A>
-typename List7<T, A>::iterator List7<T, A>::end()
+typename List<T, A>::iterator List<T, A>::end()
 {
   return iterator(0);
 }
 
 template<class T, class A>
-void List7<T, A>::push_front(const T &value)
+void List<T, A>::push_front(const T &value)
 {
   Node *pNode = new Node(value, m_pFirstNode);
   m_pFirstNode = pNode;
@@ -283,7 +283,7 @@ void List7<T, A>::push_front(const T &value)
  * be called only on an empty list
  */
 template<class T, class A>
-void List7<T, A>::createFrom(const List7<T, A> &rhs)
+void List<T, A>::createFrom(const List<T, A> &rhs)
 {
   // Ensure that the list is empty
   assert(m_pFirstNode == 0);
@@ -309,7 +309,7 @@ void List7<T, A>::createFrom(const List7<T, A> &rhs)
  * Function factoring out the cleanup code
  */
 template<class T, class A>
-void List7<T, A>::release()
+void List<T, A>::release()
 {
   Node *pNode = m_pFirstNode;
   while (pNode) {

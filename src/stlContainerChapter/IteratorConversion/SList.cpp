@@ -1,116 +1,116 @@
-#include "SList1.h"
+#include "SList.h"
 
 #include <cassert>
 
-struct SList1::Node {
+struct SList::Node {
   Node(const std::string &value, Node *pNextNode);
 
   std::string m_value;
   Node *m_pNextNode;
 };
 
-SList1::Node::Node(const std::string &value, Node *pNextNode)
+SList::Node::Node(const std::string &value, Node *pNextNode)
 : m_value(value),
   m_pNextNode(pNextNode)
 {}
 
-SList1::Iterator::Iterator()
+SList::Iterator::Iterator()
 : m_pNode(0)
 {}
 
-SList1::Iterator &SList1::Iterator::operator++()
+SList::Iterator &SList::Iterator::operator++()
 {
   m_pNode = m_pNode->m_pNextNode;
   return *this;
 }
 
-const SList1::Iterator SList1::Iterator::operator++(int)
+const SList::Iterator SList::Iterator::operator++(int)
 {
   Iterator tmp(*this);
   m_pNode = m_pNode->m_pNextNode;
   return tmp;
 }
 
-std::string *SList1::Iterator::operator->() const
+std::string *SList::Iterator::operator->() const
 {
   return &m_pNode->m_value;
 }
 
-std::string &SList1::Iterator::operator*() const
+std::string &SList::Iterator::operator*() const
 {
   return m_pNode->m_value;
 }
 
-bool operator==(const SList1::Iterator &lhs, const SList1::Iterator &rhs)
+bool operator==(const SList::Iterator &lhs, const SList::Iterator &rhs)
 {
   return lhs.m_pNode == rhs.m_pNode;
 }
 
-bool operator!=(const SList1::Iterator &lhs, const SList1::Iterator &rhs)
+bool operator!=(const SList::Iterator &lhs, const SList::Iterator &rhs)
 {
   return lhs.m_pNode != rhs.m_pNode;
 }
 
-SList1::Iterator::Iterator(Node *pNode)
+SList::Iterator::Iterator(Node *pNode)
 : m_pNode(pNode)
 {}
 
-SList1::ConstIterator::ConstIterator()
+SList::ConstIterator::ConstIterator()
 : m_pNode(0)
 {}
 
-SList1::ConstIterator::ConstIterator(const Iterator &rhs)
+SList::ConstIterator::ConstIterator(const Iterator &rhs)
 : m_pNode(rhs.m_pNode)
 {}
 
-SList1::ConstIterator &SList1::ConstIterator::operator++()
+SList::ConstIterator &SList::ConstIterator::operator++()
 {
   m_pNode = m_pNode->m_pNextNode;
   return *this;
 }
 
-const SList1::ConstIterator SList1::ConstIterator::operator++(int)
+const SList::ConstIterator SList::ConstIterator::operator++(int)
 {
   ConstIterator tmp(*this);
   m_pNode = m_pNode->m_pNextNode;
   return tmp;
 }
 
-const std::string *SList1::ConstIterator::operator->() const
+const std::string *SList::ConstIterator::operator->() const
 {
   return &m_pNode->m_value;
 }
 
-const std::string &SList1::ConstIterator::operator*() const
+const std::string &SList::ConstIterator::operator*() const
 {
   return m_pNode->m_value;
 }
 
-bool operator==(const SList1::ConstIterator &lhs, const SList1::ConstIterator &rhs)
+bool operator==(const SList::ConstIterator &lhs, const SList::ConstIterator &rhs)
 {
   return lhs.m_pNode == rhs.m_pNode;
 }
 
-bool operator!=(const SList1::ConstIterator &lhs, const SList1::ConstIterator &rhs)
+bool operator!=(const SList::ConstIterator &lhs, const SList::ConstIterator &rhs)
 {
   return lhs.m_pNode != rhs.m_pNode;
 }
 
-SList1::ConstIterator::ConstIterator(const Node *pNode)
+SList::ConstIterator::ConstIterator(const Node *pNode)
 : m_pNode(pNode)
 {}
 
-SList1::SList1()
+SList::SList()
 : m_pFirstNode(0)
 {}
 
-SList1::SList1(const SList1 &rhs)
+SList::SList(const SList &rhs)
 : m_pFirstNode(0)
 {
   createFrom(rhs);
 }
 
-SList1 &SList1::operator=(const SList1 &rhs)
+SList &SList::operator=(const SList &rhs)
 {
   // Check for self-assignment
   if (this != &rhs) {
@@ -120,32 +120,32 @@ SList1 &SList1::operator=(const SList1 &rhs)
   return *this;
 }
 
-SList1::~SList1()
+SList::~SList()
 {
   release();
 }
 
-SList1::ConstIterator SList1::begin() const
+SList::ConstIterator SList::begin() const
 {
   return ConstIterator(m_pFirstNode);
 }
 
-SList1::Iterator SList1::begin()
+SList::Iterator SList::begin()
 {
   return Iterator(m_pFirstNode);
 }
 
-SList1::ConstIterator SList1::end() const
+SList::ConstIterator SList::end() const
 {
   return ConstIterator(0);
 }
 
-SList1::Iterator SList1::end()
+SList::Iterator SList::end()
 {
   return Iterator(0);
 }
 
-void SList1::push_front(const std::string &value)
+void SList::push_front(const std::string &value)
 {
   Node *pNode = new Node(value, m_pFirstNode);
   m_pFirstNode = pNode;
@@ -155,7 +155,7 @@ void SList1::push_front(const std::string &value)
  * Function factoring out the code for creating a list from an existing one. Must
  * be called only on an empty list
  */
-void SList1::createFrom(const SList1 &rhs)
+void SList::createFrom(const SList &rhs)
 {
   // Ensure that the list is empty
   assert(m_pFirstNode == 0);
@@ -180,7 +180,7 @@ void SList1::createFrom(const SList1 &rhs)
 /**
  * Function factoring out the cleanup code
  */
-void SList1::release()
+void SList::release()
 {
   Node *pNode = m_pFirstNode;
   while (pNode) {

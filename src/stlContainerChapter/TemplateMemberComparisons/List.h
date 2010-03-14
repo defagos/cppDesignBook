@@ -1,16 +1,16 @@
 /**
  * Implementation of a list container
  *   - does not conform to the STL conventions
- *   - friend iterator comparison operators
+ *   - iterator comparison operators as member functions
  */
 
-#ifndef LIST4_H
-#define LIST4_H
+#ifndef LIST_H
+#define LIST_H
 
 #include <cassert>
 
 template<class T>
-class List4 {
+class List {
 private:
   struct Node;
 
@@ -27,17 +27,11 @@ public:
     T *operator->() const;
     T &operator*() const;
 
-    friend bool operator==(const Iterator &lhs, const Iterator &rhs)
-    {
-      return lhs.m_pNode == rhs.m_pNode;
-    }
-    friend bool operator!=(const Iterator &lhs, const Iterator &rhs)
-    {
-      return lhs.m_pNode != rhs.m_pNode;
-    }
+    bool operator==(const Iterator &rhs);
+    bool operator!=(const Iterator &rhs);
   
   private:
-    friend class List4;
+    friend class List;
     friend class ConstIterator;
 
     explicit Iterator(Node *pNode);
@@ -56,29 +50,23 @@ public:
     const T *operator->() const;
     const T &operator*() const;
 
-    friend bool operator==(const ConstIterator &lhs, const ConstIterator &rhs)
-    {
-      return lhs.m_pNode == rhs.m_pNode;
-    }
-    friend bool operator!=(const ConstIterator &lhs, const ConstIterator &rhs)
-    {
-      return lhs.m_pNode != rhs.m_pNode;
-    }
+    bool operator==(const ConstIterator &rhs);
+    bool operator!=(const ConstIterator &rhs);
 
   private:
-    friend class List4;
+    friend class List;
 
     explicit ConstIterator(const Node *);
 
     const Node *m_pNode;
   };
 
-  List4();
+  List();
   
-  List4(const List4 &rhs);
-  List4 &operator=(const List4 &rhs);
+  List(const List &rhs);
+  List &operator=(const List &rhs);
 
-  ~List4();
+  ~List();
 
   ConstIterator begin() const;
   Iterator begin();
@@ -89,14 +77,14 @@ public:
   void push_front(const T &value);
 
 private:
-  void createFrom(const List4 &rhs);
+  void createFrom(const List &rhs);
   void release();
 
   Node *m_pFirstNode;
 };
 
 template<class T>
-struct List4<T>::Node {
+struct List<T>::Node {
   Node(const T &value, Node *pNextNode);
 
   T m_value;
@@ -104,25 +92,25 @@ struct List4<T>::Node {
 };
 
 template<class T>
-List4<T>::Node::Node(const T &value, Node *pNextNode)
+List<T>::Node::Node(const T &value, Node *pNextNode)
 : m_value(value),
   m_pNextNode(pNextNode)
 {}
 
 template<class T>
-List4<T>::Iterator::Iterator()
+List<T>::Iterator::Iterator()
 : m_pNode(0)
 {}
 
 template<class T>
-typename List4<T>::Iterator &List4<T>::Iterator::operator++()
+typename List<T>::Iterator &List<T>::Iterator::operator++()
 {
   m_pNode = m_pNode->m_pNextNode;
   return *this;
 }
 
 template<class T>
-const typename List4<T>::Iterator List4<T>::Iterator::operator++(int)
+const typename List<T>::Iterator List<T>::Iterator::operator++(int)
 {
   Iterator tmp(*this);
   m_pNode = m_pNode->m_pNextNode;
@@ -130,41 +118,53 @@ const typename List4<T>::Iterator List4<T>::Iterator::operator++(int)
 }
 
 template<class T>
-T *List4<T>::Iterator::operator->() const
+T *List<T>::Iterator::operator->() const
 {
   return &m_pNode->m_value;
 }
 
 template<class T>
-T &List4<T>::Iterator::operator*() const
+T &List<T>::Iterator::operator*() const
 {
   return m_pNode->m_value;
 }
 
 template<class T>
-List4<T>::Iterator::Iterator(Node *pNode)
+bool List<T>::Iterator::operator==(const typename List<T>::Iterator &rhs)
+{
+  return m_pNode == rhs.m_pNode;
+}
+
+template<class T>
+bool List<T>::Iterator::operator!=(const typename List<T>::Iterator &rhs)
+{
+  return m_pNode != rhs.m_pNode;
+}
+
+template<class T>
+List<T>::Iterator::Iterator(Node *pNode)
 : m_pNode(pNode)
 {}
 
 template<class T>
-List4<T>::ConstIterator::ConstIterator()
+List<T>::ConstIterator::ConstIterator()
 : m_pNode(0)
 {}
 
 template<class T>
-List4<T>::ConstIterator::ConstIterator(const Iterator &rhs)
+List<T>::ConstIterator::ConstIterator(const Iterator &rhs)
 : m_pNode(rhs.m_pNode)
 {}
 
 template<class T>
-typename List4<T>::ConstIterator &List4<T>::ConstIterator::operator++()
+typename List<T>::ConstIterator &List<T>::ConstIterator::operator++()
 {
   m_pNode = m_pNode->m_pNextNode;
   return *this;
 }
 
 template<class T>
-const typename List4<T>::ConstIterator List4<T>::ConstIterator::operator++(int)
+const typename List<T>::ConstIterator List<T>::ConstIterator::operator++(int)
 {
   ConstIterator tmp(*this);
   m_pNode = m_pNode->m_pNextNode;
@@ -172,36 +172,48 @@ const typename List4<T>::ConstIterator List4<T>::ConstIterator::operator++(int)
 }
 
 template<class T>
-const T *List4<T>::ConstIterator::operator->() const
+const T *List<T>::ConstIterator::operator->() const
 {
   return &m_pNode->m_value;
 }
 
 template<class T>
-const T &List4<T>::ConstIterator::operator*() const
+const T &List<T>::ConstIterator::operator*() const
 {
   return m_pNode->m_value;
 }
 
 template<class T>
-List4<T>::ConstIterator::ConstIterator(const Node *pNode)
+bool List<T>::ConstIterator::operator==(const typename List<T>::ConstIterator &rhs)
+{
+  return m_pNode == rhs.m_pNode;
+}
+
+template<class T>
+bool List<T>::ConstIterator::operator!=(const typename List<T>::ConstIterator &rhs)
+{
+  return m_pNode != rhs.m_pNode;
+}
+
+template<class T>
+List<T>::ConstIterator::ConstIterator(const Node *pNode)
 : m_pNode(pNode)
 {}
 
 template<class T>
-List4<T>::List4()
+List<T>::List()
 : m_pFirstNode(0)
 {}
 
 template<class T>
-List4<T>::List4(const List4<T> &rhs)
+List<T>::List(const List<T> &rhs)
 : m_pFirstNode(0)
 {
   createFrom(rhs);
 }
 
 template<class T>
-List4<T> &List4<T>::operator=(const List4<T> &rhs)
+List<T> &List<T>::operator=(const List<T> &rhs)
 {
   // Check for self-assignment
   if (this != &rhs) {
@@ -212,37 +224,37 @@ List4<T> &List4<T>::operator=(const List4<T> &rhs)
 }
 
 template<class T>
-List4<T>::~List4()
+List<T>::~List()
 {
   release();
 }
 
 template<class T>
-typename List4<T>::ConstIterator List4<T>::begin() const
+typename List<T>::ConstIterator List<T>::begin() const
 {
   return ConstIterator(m_pFirstNode);
 }
 
 template<class T>
-typename List4<T>::Iterator List4<T>::begin()
+typename List<T>::Iterator List<T>::begin()
 {
   return Iterator(m_pFirstNode);
 }
 
 template<class T>
-typename List4<T>::ConstIterator List4<T>::end() const
+typename List<T>::ConstIterator List<T>::end() const
 {
   return ConstIterator(0);
 }
 
 template<class T>
-typename List4<T>::Iterator List4<T>::end()
+typename List<T>::Iterator List<T>::end()
 {
   return Iterator(0);
 }
 
 template<class T>
-void List4<T>::push_front(const T &value)
+void List<T>::push_front(const T &value)
 {
   Node *pNode = new Node(value, m_pFirstNode);
   m_pFirstNode = pNode;
@@ -253,7 +265,7 @@ void List4<T>::push_front(const T &value)
  * be called only on an empty list
  */
 template<class T>
-void List4<T>::createFrom(const List4<T> &rhs)
+void List<T>::createFrom(const List<T> &rhs)
 {
   // Ensure that the list is empty
   assert(m_pFirstNode == 0);
@@ -279,7 +291,7 @@ void List4<T>::createFrom(const List4<T> &rhs)
  * Function factoring out the cleanup code
  */
 template<class T>
-void List4<T>::release()
+void List<T>::release()
 {
   Node *pNode = m_pFirstNode;
   while (pNode) {

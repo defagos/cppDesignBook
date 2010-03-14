@@ -1,66 +1,66 @@
-#include "SList2.h"
+#include "SList.h"
 
 #include <cassert>
 
-struct SList2::Node {
+struct SList::Node {
   Node(const std::string &value, Node *pNextNode);
 
   std::string m_value;
   Node *m_pNextNode;
 };
 
-inline SList2::Node::Node(const std::string &value, Node *pNextNode)
+inline SList::Node::Node(const std::string &value, Node *pNextNode)
 : m_value(value),
   m_pNextNode(pNextNode)
 {}
 
-SList2::Iterator &SList2::Iterator::operator++()
+SList::Iterator &SList::Iterator::operator++()
 {
   m_pNode = m_pNode->m_pNextNode;
   return *this;
 }
 
-const SList2::Iterator SList2::Iterator::operator++(int)
+const SList::Iterator SList::Iterator::operator++(int)
 {
   Iterator tmp(*this);
   m_pNode = m_pNode->m_pNextNode;
   return tmp;
 }
 
-std::string *SList2::Iterator::operator->() const
+std::string *SList::Iterator::operator->() const
 {
   return &m_pNode->m_value;
 }
 
-std::string &SList2::Iterator::operator*() const
+std::string &SList::Iterator::operator*() const
 {
   return m_pNode->m_value;
 }
 
-SList2::ConstIterator &SList2::ConstIterator::operator++()
+SList::ConstIterator &SList::ConstIterator::operator++()
 {
   m_pNode = m_pNode->m_pNextNode;
   return *this;
 }
 
-const SList2::ConstIterator SList2::ConstIterator::operator++(int)
+const SList::ConstIterator SList::ConstIterator::operator++(int)
 {
   ConstIterator tmp(*this);
   m_pNode = m_pNode->m_pNextNode;
   return tmp;
 }
 
-const std::string *SList2::ConstIterator::operator->() const
+const std::string *SList::ConstIterator::operator->() const
 {
   return &m_pNode->m_value;
 }
 
-const std::string &SList2::ConstIterator::operator*() const
+const std::string &SList::ConstIterator::operator*() const
 {
   return m_pNode->m_value;
 }
 
-void SList2::push_front(const std::string &value)
+void SList::push_front(const std::string &value)
 {
   Node *pNode = new Node(value, m_pFirstNode);
   m_pFirstNode = pNode;
@@ -70,7 +70,7 @@ void SList2::push_front(const std::string &value)
  * Function factoring out the code for creating a list from an existing one. Must
  * be called only on an empty list
  */
-void SList2::createFrom(const SList2 &rhs)
+void SList::createFrom(const SList &rhs)
 {
   // Ensure that the list is empty
   assert(m_pFirstNode == 0);
@@ -95,7 +95,7 @@ void SList2::createFrom(const SList2 &rhs)
 /**
  * Function factoring out the cleanup code
  */
-void SList2::release()
+void SList::release()
 {
   Node *pNode = m_pFirstNode;
   while (pNode) {

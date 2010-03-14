@@ -4,12 +4,12 @@
  *   - no inlining is performed at all
  */
 
-#ifndef SLIST1_H
-#define SLIST1_H
+#ifndef SLIST_H
+#define SLIST_H
 
 #include <string>
 
-class SList1 {
+class SList {
 private:
   struct Node;
 
@@ -30,7 +30,7 @@ public:
     friend bool operator!=(const Iterator &lhs, const Iterator &rhs);
   
   private:
-    friend class SList1;
+    friend class SList;
     friend class ConstIterator;
 
     explicit Iterator(Node *pNode);
@@ -53,19 +53,19 @@ public:
     friend bool operator!=(const ConstIterator &lhs, const ConstIterator &rhs);
 
   private:
-    friend class SList1;
+    friend class SList;
 
     explicit ConstIterator(const Node *);
 
     const Node *m_pNode;
   };
 
-  SList1();
+  SList();
   
-  SList1(const SList1 &rhs);
-  SList1 &operator=(const SList1 &rhs);
+  SList(const SList &rhs);
+  SList &operator=(const SList &rhs);
 
-  ~SList1();
+  ~SList();
 
   ConstIterator begin() const;
   Iterator begin();
@@ -76,7 +76,7 @@ public:
   void push_front(const std::string &value);
 
 private:
-  void createFrom(const SList1 &rhs);
+  void createFrom(const SList &rhs);
   void release();
 
   Node *m_pFirstNode;
