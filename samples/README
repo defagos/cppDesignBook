@@ -1,0 +1,5 @@
+Code samples for the C++ design book
+------------------------------------
+This directory contains complete implementations of the designs discussed in the book. The source
+code is located under ./src. Use the generators in ./devtools to create the development environment
+for your platform.

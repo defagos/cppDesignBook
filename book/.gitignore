@@ -12,8 +12,3 @@
 
 # Ignore generated book files
 pdf/
-
-# Ignore binary files
-bin/
-dll/
-lib/

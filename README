@@ -4,8 +4,4 @@ C++ Design Book
 I always wanted to write down some ideas about code design in C++. These few pages will maybe
 be a bit messy at first, but over time they might converge towards something interesting.
 
-You will need LaTeX to generate a readable book from the source in ./book
-The source code for the examples can in ./src
-Use the generators in ./devtools to generate the makefiles for your platform
-
 Stay tuned :-)
