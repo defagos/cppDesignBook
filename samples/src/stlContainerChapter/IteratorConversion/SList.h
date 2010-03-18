@@ -14,29 +14,7 @@ private:
   struct Node;
 
 public:
-  class ConstIterator;
-
-  class Iterator {
-  public:
-    Iterator();
-
-    Iterator &operator++();
-    const Iterator operator++(int);
-
-    std::string *operator->() const;
-    std::string &operator*() const;
-
-    friend bool operator==(const Iterator &lhs, const Iterator &rhs);
-    friend bool operator!=(const Iterator &lhs, const Iterator &rhs);
-  
-  private:
-    friend class SList;
-    friend class ConstIterator;
-
-    explicit Iterator(Node *pNode);
-
-    Node *m_pNode;
-  };
+  class Iterator;
 
   class ConstIterator {
   public:
@@ -58,6 +36,28 @@ public:
     explicit ConstIterator(const Node *);
 
     const Node *m_pNode;
+  };
+
+  class Iterator {
+  public:
+    Iterator();
+
+    Iterator &operator++();
+    const Iterator operator++(int);
+
+    std::string *operator->() const;
+    std::string &operator*() const;
+
+    friend bool operator==(const Iterator &lhs, const Iterator &rhs);
+    friend bool operator!=(const Iterator &lhs, const Iterator &rhs);
+  
+  private:
+    friend class SList;
+    friend class ConstIterator;
+
+    explicit Iterator(Node *pNode);
+
+    Node *m_pNode;
   };
 
   SList();

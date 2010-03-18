@@ -31,42 +31,7 @@ public:
   typedef typename A::reference reference;
   typedef typename A::const_reference const_reference;
 
-  class const_iterator;
-
-  // Method 2): Derive from std::iterator; No prefixing needed here, value_type from class above, i.e. List. But here added since more
-  // readable / explicit
-  class iterator : public std::iterator<
-    typename List<T, A>::value_type,
-    typename List<T, A>::difference_type,
-    typename List<T, A>::pointer,
-    typename List<T, A>::reference
-  > {
-  public:
-    iterator();
-
-    iterator &operator++();
-    const iterator operator++(int);
-
-    T *operator->() const;
-    T &operator*() const;
-
-    friend bool operator==(const iterator &lhs, const iterator &rhs)
-    {
-      return lhs.m_pNode == rhs.m_pNode;
-    }
-    friend bool operator!=(const iterator &lhs, const iterator &rhs)
-    {
-      return lhs.m_pNode != rhs.m_pNode;
-    }
-  
-  private:
-    friend class List;
-    friend class const_iterator;
-
-    explicit iterator(Node *pNode);
-
-    Node *m_pNode;
-  };
+  class iterator;
 
   // Method 2): Derive from std::iterator; No prefixing needed here, value_type from class above, i.e. List. But maybe better to be explicit (more readable)? 
   class const_iterator : public std::iterator<
@@ -103,6 +68,41 @@ public:
     const Node *m_pNode;
   };
 
+  // Method 2): Derive from std::iterator; No prefixing needed here, value_type from class above, i.e. List. But here added since more
+  // readable / explicit
+  class iterator : public std::iterator<
+    typename List<T, A>::value_type,
+    typename List<T, A>::difference_type,
+    typename List<T, A>::pointer,
+    typename List<T, A>::reference
+  > {
+  public:
+    iterator();
+
+    iterator &operator++();
+    const iterator operator++(int);
+
+    T *operator->() const;
+    T &operator*() const;
+
+    friend bool operator==(const iterator &lhs, const iterator &rhs)
+    {
+      return lhs.m_pNode == rhs.m_pNode;
+    }
+    friend bool operator!=(const iterator &lhs, const iterator &rhs)
+    {
+      return lhs.m_pNode != rhs.m_pNode;
+    }
+  
+  private:
+    friend class List;
+    friend class const_iterator;
+
+    explicit iterator(Node *pNode);
+
+    Node *m_pNode;
+  };
+
   List();
   
   List(const List &rhs);
@@ -137,43 +137,6 @@ template<class T, class A>
 List<T, A>::Node::Node(const T &value, Node *pNextNode)
 : m_value(value),
   m_pNextNode(pNextNode)
-{}
-
-template<class T, class A>
-List<T, A>::iterator::iterator()
-: m_pNode(0)
-{}
-
-template<class T, class A>
-typename List<T, A>::iterator &List<T, A>::iterator::operator++()
-{
-  m_pNode = m_pNode->m_pNextNode;
-  return *this;
-}
-
-template<class T, class A>
-const typename List<T, A>::iterator List<T, A>::iterator::operator++(int)
-{
-  iterator tmp(*this);
-  m_pNode = m_pNode->m_pNextNode;
-  return tmp;
-}
-
-template<class T, class A>
-T *List<T, A>::iterator::operator->() const
-{
-  return &m_pNode->m_value;
-}
-
-template<class T, class A>
-T &List<T, A>::iterator::operator*() const
-{
-  return m_pNode->m_value;
-}
-
-template<class T, class A>
-List<T, A>::iterator::iterator(Node *pNode)
-: m_pNode(pNode)
 {}
 
 template<class T, class A>
@@ -215,6 +178,43 @@ const T &List<T, A>::const_iterator::operator*() const
 
 template<class T, class A>
 List<T, A>::const_iterator::const_iterator(const Node *pNode)
+: m_pNode(pNode)
+{}
+
+template<class T, class A>
+List<T, A>::iterator::iterator()
+: m_pNode(0)
+{}
+
+template<class T, class A>
+typename List<T, A>::iterator &List<T, A>::iterator::operator++()
+{
+  m_pNode = m_pNode->m_pNextNode;
+  return *this;
+}
+
+template<class T, class A>
+const typename List<T, A>::iterator List<T, A>::iterator::operator++(int)
+{
+  iterator tmp(*this);
+  m_pNode = m_pNode->m_pNextNode;
+  return tmp;
+}
+
+template<class T, class A>
+T *List<T, A>::iterator::operator->() const
+{
+  return &m_pNode->m_value;
+}
+
+template<class T, class A>
+T &List<T, A>::iterator::operator*() const
+{
+  return m_pNode->m_value;
+}
+
+template<class T, class A>
+List<T, A>::iterator::iterator(Node *pNode)
 : m_pNode(pNode)
 {}
 

@@ -1,7 +1,7 @@
 \chapter{Implementing an STL-like container}
 The Standard Template Library is a wonderful component of C++, but the way to extend it is not always covered extensively in currently available literature. When trying to design an STL-like container, the programmer must face all the degrees of freedom offered by C++ when it comes to writing library classes, and it is not always easy to guess which choices should be made and why. Having a look at existing implementations can help but never replaces the design of a standard container starting from scratch.
 
-In this chapter, we partially implement an STL-like list, the simplest kind of container one encounters when using the STL. Our goal is not to reinvent the wheel, but to discuss the many design degrees of freedom we have when implementing an STL container. We will probably face some dead ends, uninspired designs, out of which we may learn interesting design advice, not only for designing STL-like containers, but for designing any kind of classes we may imagine. After having read this chapter, we will still probably throw away our custom list implementation in favor of existing implementations, but at least we will have a better grasp of how other containers with no STL-counterpart can be written.
+In this chapter, we partially implement an STL-like list, the simplest kind of container one encounters when using the STL. Our goal is not to reinvent the wheel, but to discuss the many design degrees of freedom we have when implementing an STL container. We will probably face some dead ends, uninspired designs, out of which we may learn interesting design advice, not only for designing STL-like containers, but also for everyday programming tasks. After having read this chapter, we will still probably throw away our custom list implementation in favor of existing implementations, but at least we will have a better grasp of how other containers with no STL-counterpart can be written.
 
 The choice of implementing a list and not some other kind of STL container was made on purpose: A list exhibits all containter features we are interested in (most notably interface design and iterators). We could have discussed the implementation of an STL-like vector, but since a vector is basically implemented as a contiguous array of memory cells, its iterators are implemented as low-level pointers, which I found less appealing. The list, on the other hand, is typically implemented as a list of nodes, on top of which iterators reside. Associative containers like set and map were rejected because they are similar to a list, but the details of their more complicated implementations would have distracted us from the design issues we want to focus on.
 
@@ -25,7 +25,7 @@ To answer those questions and more, we will proceed iteratively by first writing
 The naming conventions will follow more or less the STL ones. This is only when stringing to the STL requirements in the last step that all involved objects will get their proper names.
 
 \section{A list of strings}
-In this section, we design a class \lstinline!SList! for holding \lstinline!std::string! objects. Identifying design invariants is an important task since they will build the backbone of any implementation. After we have identified them for our list of strings, we start by discussing iterator interfaces. We then have a lookt at list internals and how iterators are implemented. We will finally be able to implement the list class itself.
+In this section, we design a class \lstinline!SList! for holding \lstinline!std::string! objects. Identifying design invariants is an important task since they will build the backbone of any implementation. After we have identified them for our list of strings, we start by discussing iterator interfaces. We then have a look at list internals and how iterators are implemented. We will finally be able to implement the list class itself.
 
 Unless stated explicitly, inlining is never performed. I find it a good practice never to define functions within classes, bu to define them outside classes using the \lstinline!inline! keyword:
 \begin{itemize}
@@ -34,7 +34,7 @@ Unless stated explicitly, inlining is never performed. I find it a good practice
 \item The programmer must write the \lstinline!inline! keyword explicitly, which ensures that inlining is intended and not a mistake. Inlining is a tricky task which must not be underestimated, it is wise to think twice before blindly inlining a function
 \item It is easier to test the effects of inlining since the \lstinline!inline! keyword can be added or removed easily
 \end{itemize}
-The issues related to inlining are discussed in the dedicated section.
+In some rare cases defining inlining classes within a class is not an option, though (see REF). The issues related to inlining are discussed in the dedicated section.
 
 \subsection{Design invariants}
 The following design invariants can be identified for our \lstinline!SList! list of strings:
@@ -48,7 +48,6 @@ The public \lstinline!SList! class interface we implement will therefore look li
 class SList {
 public:
     class ConstIterator {
-    public:
         // ...
     };
     class Iterator {
@@ -92,7 +91,7 @@ void h(SList &list)
 \subsection{Iterator operators}
 We first focus on iterator class interfaces. Functions the end user must have access to are:
 \begin{itemize}
-\item The pre-increment \lstinline!operator++()! and the post-increment \lstinline!operator++(int)!, \lstinline!operator->()! and \lstinline!operator*()!. These operators are always class members in C++
+\item The pre-increment \lstinline!operator++()! and the post-increment \lstinline!operator++(int)!, \lstinline!operator->()! and \lstinline!operator*()!. These operators are always class members
 \item Comparison functions: These might be member functions, friend functions, or functions at global scope. All those design options have their advantages and drawbacks, as we will see
 \item The default constructor, which creates an end iterator. As with STL containers in general, end iterators are past-the-end iterators. No other iterator constructor must be available in the public interface since there is no generic efficient way to generate an iterator pointing somewhere within an STL container (this could of course be implemented for random-access iterators efficiently, but list iterators and not random-access)
 \item The destructor, if it needs to be explicitly implemented
@@ -133,7 +132,6 @@ public:
         
         // ...
     };
-    
     // ...
 };
 \end{lstlisting}
@@ -149,9 +147,9 @@ Now that we know that an iterator is a \lstinline!Node *!, where should it appea
 \end{itemize}
 In all three cases above, the \lstinline!Node! type definition can be completely insulated from the end user, hidden in the inaccessible \lstinline!SList.cpp! implementation file. Only its name might or not be exposed in the header file depending on the constraints we put on the design.
 
-The second method does not deliver more encapsulation than the first, it just hides a name which was still unusable for end users. Moreover, for small objects like iterators, the third method is clearly overkill. We therefore focus on the first method only.
+The second method does not deliver more encapsulation than the first, it just hides a name which was already unusable for end users. Moreover, for small objects like iterators, the third method is clearly overkill. We therefore focus on the first method only.
 
-The only question to which remains is: Where do we put the forward declaration for \lstinline!Node!? Clearly \lstinline!Node! is an \lstinline!SList! implementation detail, therefore it makes sense to nest it within the \lstinline!SList! class. Since the name must be known to the \lstinline!ConstIterator! definition when it is parsed, we must add this forward declaration at the top of the class, which is still a good practice for forward declarations after all. As internal implementation detail, we definitely want the \lstinline!Node! to reside in the private section. Moreover, to emphasize the low-level nature of \lstinline!Node!, we define it as a struct instead of a class. We therefore obtain:
+The only question which remains is: Where do we put the forward declaration for \lstinline!Node!? Clearly \lstinline!Node! is an \lstinline!SList! implementation detail, therefore it makes sense to nest it within the \lstinline!SList! class. Since the name must be known to the \lstinline!ConstIterator! definition when it is parsed, we must add this forward declaration at the top of the class, which is still a good practice for forward declarations after all. As internal implementation detail, we definitely want the \lstinline!Node! to reside in the private section. Moreover, to emphasize the low-level nature of \lstinline!Node!, we define it as a struct instead of a class. We therefore obtain:
 \begin{lstlisting}[frame=single, caption={SList.h}]
 class SList {
 private:
@@ -164,7 +162,6 @@ public:
     class Iterator {
         // ...
     };
-    
     // ...
     
 private:
@@ -200,7 +197,6 @@ public:
         explicit Iterator(Node *pNode);
         // ...
     };
-    
     // ...
 
 private:
@@ -237,7 +233,6 @@ public:
         explicit Iterator(Node *pNode);
         // ...
     };
-    
     // ...
 
 private:
@@ -245,7 +240,7 @@ private:
     // ...
 };
 \end{lstlisting}
-Now the \lstinline!SList! class can instantiate iterators from node pointers, the complete iterator implementation has been revealed to SList in the process. This is not a severe issue here since:
+Now the \lstinline!SList! class can instantiate iterators from node pointers, but the complete iterator implementation has been revealed to \lstinline!SList! in the process. This is not a severe issue here since:
 \begin{itemize}
 \item Iterator classes being nested within \lstinline!SList!, they are not completely decoupled classes and it is therefore reasonable for them to share implementation details
 \item There are only few details in the iterator private section, we therefore reveal a limited amount of implementation details. This is likely to stay so since iterator classes are very basic objects which should not get much fatter anyway
@@ -255,7 +250,7 @@ For fatter and more decoupled classes, friendship involves in general an inaccep
 \subsection{The Node struct}
 As an implementation detail, the \lstinline!Node! struct was hidden behind a forward declaration and can thus be defined in the hidden \lstinline!SList.cpp! implementation file. For a singly linked list of strings each \lstinline!Node! must store a string value as well as a pointer to the next \lstinline!Node! in the list. Some remarks:
 \begin{itemize}
-\item A struct was introduced because, as a low-level structure, access to a node value and its follower does not justify the introduction of setters and getters
+\item A struct was introduced to emphasize the low-level nature of the a \lstinline!Node!
 \item A constructor is introduced for \lstinline!Node! creation. We thus get the advantages from C (being able to define low-level structures) with the benefits of C++ (proper construction). Moreover, construction can be more efficient since initialization lists can be used
 \end{itemize}
 The implementation itself is straightforward:
@@ -279,10 +274,10 @@ Providing user-defined objects with the usual semantics is a rule of sound desig
 \item By using public inheritance
 \item By providing an implicit conversion, either in the form of a constructor or as a conversion operator
 \end{itemize}
-These three options are discussed below.
+These options are discussed below.
 
 \subsubsection{Using public inheritance}
-The desired conversion can be obtained by having \lstinline!Iterator! publicly derive from \lstinline!ConstIterator!. In general public inheritance should mean is-a, but in this case the inheritance relationship is mostly just a trick to allow conversion between classes. But since the relationship is not is-a, we do not want \lstinline!Iterator! to be used polymorphically through \lstinline!ConstIterator!. This is achieved by defining the destructor non-virtual:
+The desired conversion can be obtained by having \lstinline!Iterator! publicly derive from \lstinline!ConstIterator!. In general public inheritance should mean is-a, but in this case the inheritance relationship is mostly just a trick to allow conversion between classes. Since the relationship is not is-a, we do not want \lstinline!Iterator! to be used polymorphically through \lstinline!ConstIterator!. This is achieved by letting the (here implicitly generated) destructor non-virtual. Moreover, the \lstinline!ConstIterator(const Node *)! constructor must be made protected to allow the derived \lstinline!Iterator! class to call it:
 \begin{lstlisting}[frame=single, caption={SList.h}]
 class SList {
 private:
@@ -292,110 +287,27 @@ public:
     class ConstIterator {
     public:
         ConstIterator();
-        // ...
-        
-    private:
-        friend class SList;
-    
-        explicit ConstIterator(const Node *pNode);
-        // ...
-    };
-    class Iterator : public ConstIterator {
-    public:
-        Iterator();
-        // ...
-        
-    private:
-        friend class SList;
-    
-        explicit Iterator(Node *pNode);
-        // ...
-    };
-    
-    // ...
-
-private:
-    Node *m_pHeadNode;
-    // ...
-};
-\end{lstlisting}
-Using inheritance only a single \lstinline!Node *! must be stored by iterator classes, namely in the \lstinline!ConstIterator! base class. But we cannot simply store a \lstinline!const Node *! within \lstinline!ConstIterator! since this would require us to cast constness away everytime we use it from the \lstinline!Iterator! implementation. We have several other options here:
-\begin{itemize}
-\item Store a \lstinline!Node *! within \lstinline!ConstIterator!, not a \lstinline!const Node *!:
-\begin{lstlisting}[frame=single, caption={SList.h}]
-class SList {
-private:
-    struct Node;
-
-public:
-    class ConstIterator {
-    public:
-        ConstIterator();
-                
-        // ...
-        
-    private:
-        friend class SList;
-    
-        explicit ConstIterator(const Node *pNode);
-        Node *m_pNode;
-    };
-    class Iterator : public ConstIterator {
-    public:
-        Iterator();
-        
-        // ...
-        
-    private:
-        friend class SList;
-    
-        explicit Iterator(Node *pNode);
-    };
-    
-    // ...
-
-private:
-    Node *m_pHeadNode;
-    // ...
-};
-\end{lstlisting}
-Something might seem a little bit odd in the design above: Since \lstinline!Iterator! is derived from \lstinline!ConstIterator!, the \lstinline!Iterator(Node *)! constructor needs to call \lstinline!ConstIterator(const Node *)! in its implementation. But since \lstinline!ConstIterator(const Node *)! is private, we could logically expect this not to be possible.
-
-In fact, \lstinline!ConstIterator(const Node *)! is accessible to \lstinline!Iterator(Node *)! because the \lstinline!ConstIterator! class is a friend of \lstinline!SList! and \lstinline!Iterator! is nested within SList. This means that \lstinline!SList!, and therefore \lstinline!SList::Iterator!, has access to all private members of \lstinline!ConstIterator!. When you think about it, this is in fact just a sloppy way to emulate public inheritance of protected members.
-
-Because this can confuse the programmer who reads the class interface, we can move the \lstinline!ConstIterator(const Node *)! constructor to the protected section. This does not alter the design we had in any way, since we already had some kind of protected inheritance before:
-\begin{lstlisting}[frame=single, caption={SList.h}]
-class SList {
-private:
-    struct Node;
-
-public:
-    class ConstIterator {
-    public:
-        ConstIterator();
-                
         // ...
         
     protected:
         explicit ConstIterator(const Node *pNode);
+        // ...
         
     private:
         friend class SList;
-        
-        Node *m_pNode;
+        // ...
     };
     class Iterator : public ConstIterator {
     public:
         Iterator();
-        
         // ...
         
     private:
         friend class SList;
     
         explicit Iterator(Node *pNode);
+        // ...
     };
-    
     // ...
 
 private:
@@ -403,9 +315,78 @@ private:
     // ...
 };
 \end{lstlisting}
-This interface should be less confusing than the previous one. The non-const pointer appearing in the \lstinline!ConstIterator! class can still be disturbing, though.
-\item We store a union of a \lstinline!Node *! and a \lstinline!const Node *! in \lstinline!ConstIterator!. This might make sense in some cases (e.g. when implementing smart pointer classes), but this is here clearly overkill. Moreover, it still remains confusing to have a non-const node pointer stored by the \lstinline!ConstIterator! class.
+Using inheritance only a single \lstinline!Node *! must be stored by iterator classes, namely in the \lstinline!ConstIterator! base class. We have several options here:
+\begin{itemize}
+\item Store a \lstinline!const Node *! within \lstinline!ConstIterator!. This wa
+\begin{lstlisting}[frame=single, caption={SList.h}]
+class SList {
+private:
+    struct Node;
+
+public:
+    class ConstIterator {
+    public:
+        ConstIterator();
+        // ...
+        
+    protected:
+        explicit ConstIterator(const Node *pNode);
+        // ...
+        
+    private:
+        friend class SList;
+        
+        const Node *m_pNode;
+    };
+    class Iterator : public ConstIterator {
+    public:
+        Iterator();
+        // ...
+        
+    private:
+        friend class SList;
+    
+        explicit Iterator(Node *pNode);
+    };
+    // ...
+
+private:
+    Node *m_pHeadNode;
+    // ...
+};
+\end{lstlisting}
+The operators of the derived class \lstinline!Iterator! class are implemented in terms of their !\lstinline!ConstIterator! counterparts, e.g.
+\begin{lstlisting}[frame=single, caption={SList.cpp}]
+const SList::ConstIterator SList::ConstIterator::operator++(int)
+{
+  ConstIterator tmp(*this);
+  m_pNode = m_pNode->m_pNextNode;
+  return tmp;
+}
+
+const std::string *SList::ConstIterator::operator->() const
+{
+  return &m_pNode->m_value;
+}
+
+const SList::Iterator SList::Iterator::operator++(int)
+{
+  Iterator tmp(*this);
+  ConstIterator::operator++(0);
+  return tmp;
+}
+
+std::string *SList::Iterator::operator->() const
+{
+  return const_cast<std::string *>(ConstIterator::operator->());
+}
+\end{lstlisting}
+This requires constness to be thrown away, which is in general a bad idea. This here seems acceptable since the inheritance relationhsip between the two iterator classes has just been introduced to provide an automatic conversion.
+
+\item We store a union of a \lstinline!Node *! and a \lstinline!const Node *! in \lstinline!ConstIterator!. This might make sense in some cases (e.g. when implementing smart pointer classes), but this is here clearly overkill. Moreover, it is somehow confusing to have a non-const node pointer stored by the \lstinline!ConstIterator! class.
 \end{itemize}
+
+\coderef{stlContainerChapter/IteratorInheritance}
 
 \subsubsection{Using implicit conversion}
 Implicit conversion from \lstinline!Iterator! to \lstinline!ConstIterator! can be implemented using two equivalent approaches:
@@ -417,24 +398,12 @@ private:
     struct Node;
 
 public:
-    class Iterator {
-    public:
-        Iterator();
-        
-        // ...
-        
-    private:
-        friend class SList;
-    
-        explicit Iterator(Node *pNode);
-        
-        Node *m_pNode;
-    };
+    class Iterator;
+
     class ConstIterator {
     public:
         ConstIterator();
-        ConstIterator(const Iterator &rhs);
-                
+        ConstIterator(const Iterator &rhs);      
         // ...
         
     private:
@@ -444,7 +413,19 @@ public:
         
         const Node *m_pNode;
     };
+    class Iterator {
+    public:
+        Iterator();
+        // ...
+        
+    private:
+        friend class SList;
+        friend class ConstIterator;
     
+        explicit Iterator(Node *pNode);
+        
+        Node *m_pNode;
+    };
     // ...
 
 private:
@@ -452,7 +433,7 @@ private:
     // ...
 };
 \end{lstlisting}
-In comparison to our previous designs, I here chose to reorder the two class definitions to make the \lstinline!Iterator! name available to the \lstinline!ConstIterator! class. A forward declaration could have achieved the same result.
+The \lstinline!ConstIterator! class has been made friend of the \lstinline!Iterator! class so that the \lstinline!ConstIterator(const Iterator &rhs)! constructor can access the node pointer stored within \lstinline!rhs!. A forward declaration was needed for \lstinline!Iterator!.
 
 \item By adding a conversion operator to the \lstinline!Iterator! class
 \begin{lstlisting}[frame=single, caption={SList.h}]
@@ -461,14 +442,16 @@ private:
     struct Node;
 
 public:
+    class Iterator;
+
     class ConstIterator {
     public:
-        ConstIterator();
-                
+        ConstIterator();      
         // ...
         
     private:
         friend class SList;
+        friend class Iterator;
         
         explicit ConstIterator(const Node *pNode);
         
@@ -487,7 +470,6 @@ public:
         
         Node *m_pNode;
     };
-
     // ...
 
 private:
@@ -498,7 +480,7 @@ private:
 \end{itemize}
 Which approach you prefer is a matter of taste. I prefer reserving the conversion iterator for conversions to types I cannot change the implementation of (e.g. built-in types, STL types, classes from thrid-party libraries, etc.). In all other cases where the implementation is mine I use a constructor to perform implicit conversion.
 
-As with the public inheritance approach, this works since each iterator class has access to the other one thanks to the \lstinline!SList! friendship.
+\coderef{stlContainerChapter/IteratorConversion}
 
 \subsection{Iterator comparison operators}
 When implementing binary operators, we always have three choices, in decreasing order of encapsulation:

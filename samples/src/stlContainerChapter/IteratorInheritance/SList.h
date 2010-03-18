@@ -39,7 +39,7 @@ public:
     const Node *m_pNode;
   };
 
-class Iterator : public ConstIterator {
+  class Iterator : public ConstIterator {
   public:
     Iterator();
 

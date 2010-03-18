@@ -11,6 +11,9 @@
 \usepackage{graphicx}
 \usepackage{listings}
 \usepackage{color}
+% Must select the proper subsets from the ifsym package, see ifsym.sty in ${TexInstall}\tex\latex
+\usepackage[misc]{ifsym}
+\usepackage{pifont}
 % Changes the typewriter font family to have bold fonts, etc.
 \usepackage[T1]{fontenc}
 \usepackage[scaled]{luximono}
@@ -18,6 +21,18 @@
     language=C++,
     showstringspaces=false,
     basicstyle=\small\ttfamily
+}
+
+\definecolor{light-gray}{gray}{0.9}
+
+\newcommand{\coderef}[1]{
+    \fcolorbox{light-gray}{light-gray}{
+        \begin{tabular*}{\textwidth}{ll}
+            \ding{45}       &           \bf Source code \\
+                            &           The complete source code can be found under the directory\\
+                            &           \multicolumn{1}{c}{\lstinline!#1!}
+        \end{tabular*}
+    }
 }
 
 \makeindex

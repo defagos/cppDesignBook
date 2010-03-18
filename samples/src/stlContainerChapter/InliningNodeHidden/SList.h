@@ -15,29 +15,7 @@ private:
   struct Node;
 
 public:
-  class ConstIterator;
-
-  class Iterator {
-  public:
-    Iterator();
-
-    Iterator &operator++();
-    const Iterator operator++(int);
-
-    std::string *operator->() const;
-    std::string &operator*() const;
-
-    friend bool operator==(const Iterator &lhs, const Iterator &rhs);
-    friend bool operator!=(const Iterator &lhs, const Iterator &rhs);
-  
-  private:
-    friend class SList;
-    friend class ConstIterator;
-
-    explicit Iterator(Node *pNode);
-
-    Node *m_pNode;
-  };
+  class Iterator;
 
   class ConstIterator {
   public:
@@ -59,6 +37,28 @@ public:
     explicit ConstIterator(const Node *);
 
     const Node *m_pNode;
+  };
+
+  class Iterator {
+  public:
+    Iterator();
+
+    Iterator &operator++();
+    const Iterator operator++(int);
+
+    std::string *operator->() const;
+    std::string &operator*() const;
+
+    friend bool operator==(const Iterator &lhs, const Iterator &rhs);
+    friend bool operator!=(const Iterator &lhs, const Iterator &rhs);
+  
+  private:
+    friend class SList;
+    friend class ConstIterator;
+
+    explicit Iterator(Node *pNode);
+
+    Node *m_pNode;
   };
 
   SList();
@@ -83,24 +83,6 @@ private:
   Node *m_pFirstNode;
 };
 
-inline SList::Iterator::Iterator()
-: m_pNode(0)
-{}
-
-inline bool operator==(const SList::Iterator &lhs, const SList::Iterator &rhs)
-{
-  return lhs.m_pNode == rhs.m_pNode;
-}
-
-inline bool operator!=(const SList::Iterator &lhs, const SList::Iterator &rhs)
-{
-  return lhs.m_pNode != rhs.m_pNode;
-}
-
-inline SList::Iterator::Iterator(Node *pNode)
-: m_pNode(pNode)
-{}
-
 inline SList::ConstIterator::ConstIterator()
 : m_pNode(0)
 {}
@@ -120,6 +102,24 @@ inline bool operator!=(const SList::ConstIterator &lhs, const SList::ConstIterat
 }
 
 inline SList::ConstIterator::ConstIterator(const Node *pNode)
+: m_pNode(pNode)
+{}
+
+inline SList::Iterator::Iterator()
+: m_pNode(0)
+{}
+
+inline bool operator==(const SList::Iterator &lhs, const SList::Iterator &rhs)
+{
+  return lhs.m_pNode == rhs.m_pNode;
+}
+
+inline bool operator!=(const SList::Iterator &lhs, const SList::Iterator &rhs)
+{
+  return lhs.m_pNode != rhs.m_pNode;
+}
+
+inline SList::Iterator::Iterator(Node *pNode)
 : m_pNode(pNode)
 {}
 

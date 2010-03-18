@@ -14,47 +14,6 @@ SList::Node::Node(const std::string &value, Node *pNextNode)
   m_pNextNode(pNextNode)
 {}
 
-SList::Iterator::Iterator()
-: m_pNode(0)
-{}
-
-SList::Iterator &SList::Iterator::operator++()
-{
-  m_pNode = m_pNode->m_pNextNode;
-  return *this;
-}
-
-const SList::Iterator SList::Iterator::operator++(int)
-{
-  Iterator tmp(*this);
-  m_pNode = m_pNode->m_pNextNode;
-  return tmp;
-}
-
-std::string *SList::Iterator::operator->() const
-{
-  return &m_pNode->m_value;
-}
-
-std::string &SList::Iterator::operator*() const
-{
-  return m_pNode->m_value;
-}
-
-bool operator==(const SList::Iterator &lhs, const SList::Iterator &rhs)
-{
-  return lhs.m_pNode == rhs.m_pNode;
-}
-
-bool operator!=(const SList::Iterator &lhs, const SList::Iterator &rhs)
-{
-  return lhs.m_pNode != rhs.m_pNode;
-}
-
-SList::Iterator::Iterator(Node *pNode)
-: m_pNode(pNode)
-{}
-
 SList::ConstIterator::ConstIterator()
 : m_pNode(0)
 {}
@@ -97,6 +56,47 @@ bool operator!=(const SList::ConstIterator &lhs, const SList::ConstIterator &rhs
 }
 
 SList::ConstIterator::ConstIterator(const Node *pNode)
+: m_pNode(pNode)
+{}
+
+SList::Iterator::Iterator()
+: m_pNode(0)
+{}
+
+SList::Iterator &SList::Iterator::operator++()
+{
+  m_pNode = m_pNode->m_pNextNode;
+  return *this;
+}
+
+const SList::Iterator SList::Iterator::operator++(int)
+{
+  Iterator tmp(*this);
+  m_pNode = m_pNode->m_pNextNode;
+  return tmp;
+}
+
+std::string *SList::Iterator::operator->() const
+{
+  return &m_pNode->m_value;
+}
+
+std::string &SList::Iterator::operator*() const
+{
+  return m_pNode->m_value;
+}
+
+bool operator==(const SList::Iterator &lhs, const SList::Iterator &rhs)
+{
+  return lhs.m_pNode == rhs.m_pNode;
+}
+
+bool operator!=(const SList::Iterator &lhs, const SList::Iterator &rhs)
+{
+  return lhs.m_pNode != rhs.m_pNode;
+}
+
+SList::Iterator::Iterator(Node *pNode)
 : m_pNode(pNode)
 {}
 

@@ -14,29 +14,6 @@ inline SList::Node::Node(const std::string &value, Node *pNextNode)
   m_pNextNode(pNextNode)
 {}
 
-SList::Iterator &SList::Iterator::operator++()
-{
-  m_pNode = m_pNode->m_pNextNode;
-  return *this;
-}
-
-const SList::Iterator SList::Iterator::operator++(int)
-{
-  Iterator tmp(*this);
-  m_pNode = m_pNode->m_pNextNode;
-  return tmp;
-}
-
-std::string *SList::Iterator::operator->() const
-{
-  return &m_pNode->m_value;
-}
-
-std::string &SList::Iterator::operator*() const
-{
-  return m_pNode->m_value;
-}
-
 SList::ConstIterator &SList::ConstIterator::operator++()
 {
   m_pNode = m_pNode->m_pNextNode;
@@ -56,6 +33,29 @@ const std::string *SList::ConstIterator::operator->() const
 }
 
 const std::string &SList::ConstIterator::operator*() const
+{
+  return m_pNode->m_value;
+}
+
+SList::Iterator &SList::Iterator::operator++()
+{
+  m_pNode = m_pNode->m_pNextNode;
+  return *this;
+}
+
+const SList::Iterator SList::Iterator::operator++(int)
+{
+  Iterator tmp(*this);
+  m_pNode = m_pNode->m_pNextNode;
+  return tmp;
+}
+
+std::string *SList::Iterator::operator->() const
+{
+  return &m_pNode->m_value;
+}
+
+std::string &SList::Iterator::operator*() const
 {
   return m_pNode->m_value;
 }

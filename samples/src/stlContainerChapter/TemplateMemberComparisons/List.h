@@ -15,29 +15,7 @@ private:
   struct Node;
 
 public:
-  class ConstIterator;
-
-  class Iterator {
-  public:
-    Iterator();
-
-    Iterator &operator++();
-    const Iterator operator++(int);
-
-    T *operator->() const;
-    T &operator*() const;
-
-    bool operator==(const Iterator &rhs);
-    bool operator!=(const Iterator &rhs);
-  
-  private:
-    friend class List;
-    friend class ConstIterator;
-
-    explicit Iterator(Node *pNode);
-
-    Node *m_pNode;
-  };
+  class Iterator;
 
   class ConstIterator {
   public:
@@ -59,6 +37,28 @@ public:
     explicit ConstIterator(const Node *);
 
     const Node *m_pNode;
+  };
+
+  class Iterator {
+  public:
+    Iterator();
+
+    Iterator &operator++();
+    const Iterator operator++(int);
+
+    T *operator->() const;
+    T &operator*() const;
+
+    bool operator==(const Iterator &rhs);
+    bool operator!=(const Iterator &rhs);
+  
+  private:
+    friend class List;
+    friend class ConstIterator;
+
+    explicit Iterator(Node *pNode);
+
+    Node *m_pNode;
   };
 
   List();
@@ -95,55 +95,6 @@ template<class T>
 List<T>::Node::Node(const T &value, Node *pNextNode)
 : m_value(value),
   m_pNextNode(pNextNode)
-{}
-
-template<class T>
-List<T>::Iterator::Iterator()
-: m_pNode(0)
-{}
-
-template<class T>
-typename List<T>::Iterator &List<T>::Iterator::operator++()
-{
-  m_pNode = m_pNode->m_pNextNode;
-  return *this;
-}
-
-template<class T>
-const typename List<T>::Iterator List<T>::Iterator::operator++(int)
-{
-  Iterator tmp(*this);
-  m_pNode = m_pNode->m_pNextNode;
-  return tmp;
-}
-
-template<class T>
-T *List<T>::Iterator::operator->() const
-{
-  return &m_pNode->m_value;
-}
-
-template<class T>
-T &List<T>::Iterator::operator*() const
-{
-  return m_pNode->m_value;
-}
-
-template<class T>
-bool List<T>::Iterator::operator==(const typename List<T>::Iterator &rhs)
-{
-  return m_pNode == rhs.m_pNode;
-}
-
-template<class T>
-bool List<T>::Iterator::operator!=(const typename List<T>::Iterator &rhs)
-{
-  return m_pNode != rhs.m_pNode;
-}
-
-template<class T>
-List<T>::Iterator::Iterator(Node *pNode)
-: m_pNode(pNode)
 {}
 
 template<class T>
@@ -197,6 +148,55 @@ bool List<T>::ConstIterator::operator!=(const typename List<T>::ConstIterator &r
 
 template<class T>
 List<T>::ConstIterator::ConstIterator(const Node *pNode)
+: m_pNode(pNode)
+{}
+
+template<class T>
+List<T>::Iterator::Iterator()
+: m_pNode(0)
+{}
+
+template<class T>
+typename List<T>::Iterator &List<T>::Iterator::operator++()
+{
+  m_pNode = m_pNode->m_pNextNode;
+  return *this;
+}
+
+template<class T>
+const typename List<T>::Iterator List<T>::Iterator::operator++(int)
+{
+  Iterator tmp(*this);
+  m_pNode = m_pNode->m_pNextNode;
+  return tmp;
+}
+
+template<class T>
+T *List<T>::Iterator::operator->() const
+{
+  return &m_pNode->m_value;
+}
+
+template<class T>
+T &List<T>::Iterator::operator*() const
+{
+  return m_pNode->m_value;
+}
+
+template<class T>
+bool List<T>::Iterator::operator==(const typename List<T>::Iterator &rhs)
+{
+  return m_pNode == rhs.m_pNode;
+}
+
+template<class T>
+bool List<T>::Iterator::operator!=(const typename List<T>::Iterator &rhs)
+{
+  return m_pNode != rhs.m_pNode;
+}
+
+template<class T>
+List<T>::Iterator::Iterator(Node *pNode)
 : m_pNode(pNode)
 {}
 
